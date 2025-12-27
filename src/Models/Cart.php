@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Carton\Carton\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -24,6 +25,7 @@ use Illuminate\Foundation\Auth\User;
  * @property array $additional
  * @property int $user_id
  * @property-read User|null $user
+ * @property-read Collection<int, CartLine> $lines
  */
 final class Cart extends Model
 {
