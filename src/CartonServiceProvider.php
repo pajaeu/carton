@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Carton\Carton;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class CartonServiceProvider extends PackageServiceProvider
+final class CartonServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -17,6 +19,10 @@ class CartonServiceProvider extends PackageServiceProvider
         $package
             ->name('carton')
             ->hasConfigFile()
-            ->hasViews();
+            ->hasViews()
+            ->hasMigrations(
+                'create_carts_table',
+                'create_cart_lines_table'
+            );
     }
 }
