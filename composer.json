@@ -2,9 +2,7 @@
     "name": "pajaeu/carton",
     "description": "The missing cart package for Laravel.",
     "keywords": [
-        "pajaeu",
-        "laravel",
-        "carton"
+        "laravel"
     ],
     "homepage": "https://github.com/pajaeu/carton",
     "license": "MIT",
