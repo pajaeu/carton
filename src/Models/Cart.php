@@ -1,12 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Carton\Carton\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User;
 
-class Cart extends Model
+/**
+ * @property-read int $id
+ * @property bool $is_active
+ * @property float $exchange_rate
+ * @property string|null $currency_code
+ * @property int $count
+ * @property float $sub_total
+ * @property float $sub_total_with_vat
+ * @property float $grand_total
+ * @property float $grand_total_with_vat
+ * @property float $discount_total
+ * @property float $vat_total
+ * @property array $additional
+ * @property int $user_id
+ * @property-read User|null $user
+ */
+final class Cart extends Model
 {
+    protected $guarded = [];
+
     protected $casts = [
         'is_active' => 'boolean',
         'exchange_rate' => 'float',
@@ -23,5 +47,11 @@ class Cart extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(config('auth.providers.users.model'));
+    }
+
+    /** @return HasMany<CartLine, $this> */
+    public function lines(): HasMany
+    {
+        return $this->hasMany(CartLine::class);
     }
 }
