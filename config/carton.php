@@ -1,6 +1,9 @@
 <?php
 
-// config for Carton/Carton
-return [
+declare(strict_types=1);
 
+return [
+    'default_currency' => [
+        'code' => 'EUR',
+    ],
 ];
