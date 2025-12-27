@@ -19,7 +19,6 @@ final class CartonServiceProvider extends PackageServiceProvider
         $package
             ->name('carton')
             ->hasConfigFile()
-            ->hasViews()
             ->hasMigrations(
                 'create_carts_table',
                 'create_cart_lines_table'
