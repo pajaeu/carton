@@ -250,7 +250,7 @@ final class Carton
         foreach ($this->cart->lines as $line) {
             $subTotal += $line->total;
             $subTotalWithVat += $line->total_with_vat;
-            $grandTotal += $line->total_with_vat;
+            $grandTotal += $line->total;
             $grandTotalWithVat += $line->total_with_vat;
             $vatTotal += $line->total_with_vat - $line->total;
         }
