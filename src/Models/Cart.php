@@ -31,9 +31,7 @@ final class Cart extends Model
 {
     protected $guarded = [];
 
-    /**
-     * @return BelongsTo<Model, $this>
-     */
+    /** @return BelongsTo<Model, $this> */
     public function user(): BelongsTo
     {
         /** @var class-string<Model> $userModel */
