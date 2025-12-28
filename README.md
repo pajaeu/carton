@@ -1,83 +1,82 @@
-# The missing cart package for Laravel.
+<p align="center">
+    <img src="./art/logo.png" alt="Carton logo" height="60px">
+</p>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/pajaeu/carton.svg?style=flat-square)](https://packagist.org/packages/pajaeu/carton)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/pajaeu/carton/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/pajaeu/carton/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/pajaeu/carton/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/pajaeu/carton/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/pajaeu/carton.svg?style=flat-square)](https://packagist.org/packages/pajaeu/carton)
+<p align="center">
+    <a href="https://packagist.org/packages/pajaeu/carton">
+        <img src="https://img.shields.io/packagist/v/pajaeu/carton.svg?style=flat" alt="Packagist">
+    </a>
+    <a href="https://laravel.com">
+        <img src="https://img.shields.io/badge/Laravel-12.0%2B-FF2D20?style=flat&logo=laravel" alt="Laravel version">
+    </a>
+    <a href="https://packagist.org/packages/pajaeu/carton">
+        <img src="https://img.shields.io/packagist/dt/pajaeu/carton.svg?style=flat" alt="Total downloads">
+    </a>
+    <a href="https://packagist.org/packages/pajaeu/carton">
+        <img src="https://img.shields.io/packagist/l/pajaeu/carton.svg?style=flat" alt="Total downloads">
+    </a>
+</p>
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+---
 
-## Support us
+**Carton** is the missing cart package for Laravel.
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/carton.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/carton)
+## 📦 Installation
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
-## Installation
-
-You can install the package via composer:
+Install package via composer
 
 ```bash
 composer require pajaeu/carton
 ```
 
-You can publish and run the migrations with:
+Then publish configuration and migrations
 
 ```bash
-php artisan vendor:publish --tag="carton-migrations"
-php artisan migrate
+php artisan carton:install
 ```
 
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="carton-config"
-```
-
-This is the contents of the published config file:
+## 🚀 How to use Carton
 
 ```php
-return [
-];
+// create cart using custom currency code
+Carton::createCart('CZK');
+
+// if we do not pass currency code, it uses default one specified in config
+Carton::createCart();
+
+// then we need to create new data
+$data = new CartLineData(
+    'Product 1',
+    300,
+    21,
+    [
+        'size' => [
+            'XS',
+        ],
+    ]
+);
+
+// so we can pass it to the addLine method also with the quantity parameter
+Carton::addLine($data, 2);
+
+// we can recalculate cart's totals so we have everything right (it is being made automatically when calling adding new line)
+Carton::recalculate();
+
+// then we can get the cart model and its properties
+$cart = Carton::getCart();
+
+echo 'Total items in cart: '.$cart->count;
+echo 'Totals to pay: '.$cart->grand_total_with_vat.' '.$cart->currency_code;
+
+// we can also get some current cart's properties using the facade
+echo 'Totals to pay: '.Carton::getCartTotal().' '.Carton::getCartCurrencyCode();
+
+// we can access lines on the cart model
+$lines = $cart->lines;
+
+// or you can get lines using the facade (returns empty collection if cart is not created yet)
+$lines = Carton::getCartLines();
 ```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="carton-views"
-```
-
-## Usage
-
-```php
-$carton = new Carton\Carton();
-echo $carton->echoPhrase('Hello, Carton!');
-```
-
-## Testing
-
-```bash
-composer test
-```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [Pavel Skrbel](https://github.com/pajaeu)
-- [All Contributors](../../contributors)
 
 ## License
 
