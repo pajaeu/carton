@@ -6,6 +6,9 @@ namespace Carton\Carton\Data;
 
 final readonly class CartLineData
 {
+    /**
+     * @param  array<string, mixed>  $additional
+     */
     public function __construct(
         public string $title,
         public float $price,

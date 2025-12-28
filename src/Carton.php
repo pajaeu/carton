@@ -8,8 +8,10 @@ use Carton\Carton\Data\CartLineData;
 use Carton\Carton\Models\Cart;
 use Carton\Carton\Models\CartLine;
 use Exception;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 final class Carton
 {
@@ -24,12 +26,12 @@ final class Carton
 
     public function init(): void
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
-        if ($user) {
+        if ($user instanceof Authenticatable) {
             $this->cart = Cart::query()
                 ->where('is_active', true)
-                ->where('user_id', $user->id)
+                ->where('user_id', $user->getAuthIdentifier())
                 ->first();
 
             return;
@@ -37,8 +39,9 @@ final class Carton
 
         if (session()->has(self::SESSION_KEY)) {
             $this->cart = Cart::query()
+                ->where('id', session(self::SESSION_KEY))
                 ->where('is_active', true)
-                ->find(session(self::SESSION_KEY));
+                ->first();
         }
     }
 
@@ -58,6 +61,7 @@ final class Carton
         session()->put(self::SESSION_KEY, $this->cart->id);
     }
 
+    /** @return Collection<int, CartLine> */
     public function getCartLines(): Collection
     {
         if (! $this->cart instanceof Cart) {
@@ -91,7 +95,7 @@ final class Carton
             return '';
         }
 
-        return $this->cart->currency_code;
+        return $this->cart->currency_code ?? '';
     }
 
     public function createCart(?string $currencyCode = null): Cart
@@ -101,7 +105,7 @@ final class Carton
         $data = [
             'is_active' => true,
             'currency_code' => $currencyCode,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
         ];
 
         $cart = Cart::query()->create($data);
@@ -130,18 +134,18 @@ final class Carton
 
         $cart = Cart::query()
             ->where('is_active', true)
-            ->where('user_id', $user->id)
+            ->where('user_id', $user->getAuthIdentifier())
             ->first();
 
         $guestCart = Cart::query()->find(session(self::SESSION_KEY));
 
-        if (! $guestCart) {
+        if (! $guestCart instanceof Cart) {
             return;
         }
 
         if (! $cart) {
             $guestCart->update([
-                'user_id' => $user->id,
+                'user_id' => $user->getAuthIdentifier(),
             ]);
 
             session()->forget(self::SESSION_KEY);
@@ -182,6 +186,8 @@ final class Carton
             $price = $data->price;
             $priceWithVat = $price * (1 + $data->vatRate / 100);
         }
+
+        assert($this->cart instanceof Cart);
 
         $line = $this->cart->lines()->create([
             'title' => $data->title,
@@ -229,7 +235,7 @@ final class Carton
             $vatTotal += $line->total_with_vat - $line->total;
         }
 
-        $this->cart->count = $count;
+        $this->cart->count = is_numeric($count) ? (int) $count : 0;
         $this->cart->sub_total = $subTotal;
         $this->cart->sub_total_with_vat = $subTotalWithVat;
         $this->cart->grand_total = $grandTotal;
