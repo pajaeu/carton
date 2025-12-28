@@ -9,7 +9,6 @@ use Carton\Carton\Models\Cart;
 use Carton\Carton\Models\CartLine;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -126,7 +125,7 @@ final class Carton
         $this->cart = null;
     }
 
-    public function mergeUserCart(User $user): void
+    public function mergeUserCart(Authenticatable $user): void
     {
         if (! session()->has(self::SESSION_KEY)) {
             return;
