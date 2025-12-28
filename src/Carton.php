@@ -157,7 +157,7 @@ final class Carton
                     $guestCartLine->title,
                     $guestCartLine->price,
                     $guestCartLine->vat_rate,
-					$guestCartLine->additional
+                    $guestCartLine->additional
                 ), $guestCartLine->quantity);
             } catch (Exception $e) {
                 report($e);
