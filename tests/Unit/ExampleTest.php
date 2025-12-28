@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-it('can test', function () {
+test('that true is true', function () {
     expect(true)->toBeTrue();
 });
