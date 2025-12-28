@@ -7,6 +7,8 @@ namespace Carton\Carton;
 use Carton\Carton\Data\CartLineData;
 use Carton\Carton\Models\Cart;
 use Carton\Carton\Models\CartLine;
+use Exception;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
 
 final class Carton
@@ -118,6 +120,53 @@ final class Carton
         }
 
         $this->cart = null;
+    }
+
+    public function mergeUserCart(User $user): void
+    {
+        if (! session()->has(self::SESSION_KEY)) {
+            return;
+        }
+
+        $cart = Cart::query()
+            ->where('is_active', true)
+            ->where('user_id', $user->id)
+            ->first();
+
+        $guestCart = Cart::query()->find(session(self::SESSION_KEY));
+
+        if (! $guestCart) {
+            return;
+        }
+
+        if (! $cart) {
+            $guestCart->update([
+                'user_id' => $user->id,
+            ]);
+
+            session()->forget(self::SESSION_KEY);
+
+            return;
+        }
+
+        $this->setCart($cart);
+
+        foreach ($guestCart->lines as $guestCartLine) {
+            try {
+                $this->addLine(new CartLineData(
+                    $guestCartLine->title,
+                    $guestCartLine->price,
+                    $guestCartLine->vat_rate,
+					$guestCartLine->additional
+                ), $guestCartLine->quantity);
+            } catch (Exception $e) {
+                report($e);
+            }
+        }
+
+        $this->recalculate();
+
+        $this->destroyCart($guestCart);
     }
 
     public function addLine(CartLineData $data, int $quantity = 1): CartLine
