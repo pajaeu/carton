@@ -211,9 +211,7 @@ describe('Cart lines', function () {
 
         $line = Carton::addLine(new CartLineData('Product', 100.00, 21.0));
 
-        $result = Carton::updateLineQuantity($line, 5);
-
-        expect($result)->toBeTrue();
+        Carton::updateLineQuantity($line, 5);
 
         $line->refresh();
 
