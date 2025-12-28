@@ -7,6 +7,7 @@ namespace Carton\Carton;
 use Carton\Carton\Data\CartLineData;
 use Carton\Carton\Models\Cart;
 use Carton\Carton\Models\CartLine;
+use Illuminate\Support\Collection;
 
 final class Carton
 {
@@ -53,6 +54,42 @@ final class Carton
         }
 
         session()->put(self::SESSION_KEY, $this->cart->id);
+    }
+
+    public function getCartLines(): Collection
+    {
+        if (! $this->cart instanceof Cart) {
+            return collect([]);
+        }
+
+        return $this->cart->lines;
+    }
+
+    public function getCartSubtotal(bool $withVat = true): float
+    {
+        if (! $this->cart instanceof Cart) {
+            return 0.00;
+        }
+
+        return $withVat ? $this->cart->sub_total_with_vat : $this->cart->sub_total;
+    }
+
+    public function getCartTotal(bool $withVat = true): float
+    {
+        if (! $this->cart instanceof Cart) {
+            return 0.00;
+        }
+
+        return $withVat ? $this->cart->grand_total_with_vat : $this->cart->grand_total;
+    }
+
+    public function getCartCurrencyCode(): string
+    {
+        if (! $this->cart instanceof Cart) {
+            return '';
+        }
+
+        return $this->cart->currency_code;
     }
 
     public function createCart(?string $currencyCode = null): Cart
