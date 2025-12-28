@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-pest()->extend(Carton\Carton\Tests\TestCase::class)
- // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature');
+use Carton\Carton\Tests\TestCase;
+
+pest()->extend(TestCase::class)->in('Feature');
