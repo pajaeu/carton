@@ -26,6 +26,7 @@ jobs:
         stability: [prefer-lowest, prefer-stable]
         include:
           - laravel: 12.*
+          - pest-plugin-laravel: 3.1.0
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -42,7 +43,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update --no-progress
+          composer require "laravel/framework:${{ matrix.laravel }}" "pestphp/pest-plugin-laravel:${{ matrix.pest-plugin-laravel }}" --no-interaction --no-update --no-progress
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
