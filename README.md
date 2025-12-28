@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./art/logo.png" alt="Carton logo" height="60px">
+    <img src="./art/logo.png" alt="Carton logo" height="100px">
 </p>
 
 <p align="center">
