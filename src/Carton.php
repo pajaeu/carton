@@ -204,6 +204,17 @@ final class Carton
         return $line;
     }
 
+    public function removeLine(int $id): void
+    {
+        if (! $this->cart instanceof Cart) {
+            return;
+        }
+
+        $this->cart->lines->find($id)?->delete();
+
+        $this->recalculate();
+    }
+
     public function updateLineQuantity(CartLine $line, int $quantity): bool
     {
         return $line->update([
