@@ -3,18 +3,11 @@
 </p>
 
 <p align="center">
-    <a href="https://packagist.org/packages/pajaeu/carton">
-        <img src="https://img.shields.io/packagist/v/pajaeu/carton.svg?style=flat" alt="Packagist">
-    </a>
-    <a href="https://laravel.com">
-        <img src="https://img.shields.io/badge/Laravel-12.0%2B-FF2D20?style=flat&logo=laravel" alt="Laravel version">
-    </a>
-    <a href="https://packagist.org/packages/pajaeu/carton">
-        <img src="https://img.shields.io/packagist/dt/pajaeu/carton.svg?style=flat" alt="Total downloads">
-    </a>
-    <a href="https://packagist.org/packages/pajaeu/carton">
-        <img src="https://img.shields.io/packagist/l/pajaeu/carton.svg?style=flat" alt="Total downloads">
-    </a>
+    <a href="https://packagist.org/packages/pajaeu/carton"><img src="https://img.shields.io/packagist/v/pajaeu/carton.svg?style=flat" alt="Packagist"></a>
+    <a href="https://github.com/pajaeu/carton/actions?query=workflow%3Arun-tests+branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/pajaeu/carton/run-tests.yml?branch=main&label=tests&style=flat" alt="Tests"></a>
+    <a href="https://laravel.com"><img src="https://img.shields.io/badge/Laravel-12.0%2B-FF2D20?style=flat&logo=laravel" alt="Laravel version"></a>
+    <a href="https://packagist.org/packages/pajaeu/carton"><img src="https://img.shields.io/packagist/dt/pajaeu/carton.svg?style=flat" alt="Total downloads"></a>
+    <a href="https://packagist.org/packages/pajaeu/carton"><img src="https://img.shields.io/packagist/l/pajaeu/carton.svg?style=flat" alt="Total downloads"></a>
 </p>
 
 ---
