@@ -25,7 +25,8 @@ jobs:
         stability: [prefer-lowest, prefer-stable]
         include:
           - laravel: 12.*
-          - pest-plugin-laravel: 4.*
+            testbench: 10.*
+            pest-plugin-laravel: 4.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
 
@@ -42,7 +43,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "pestphp/pest-plugin-laravel:${{ matrix.pest-plugin-laravel }}" --no-interaction --no-update --no-progress
+          composer require "laravel/framework:${{ matrix.laravel }}" "pestphp/pest-plugin-laravel:${{ matrix.pest-plugin-laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
