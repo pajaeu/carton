@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Carton\Carton;
 
+use Carton\Carton\Data\CartLineData;
 use Carton\Carton\Models\Cart;
+use Carton\Carton\Models\CartLine;
 
 final class Carton
 {
@@ -51,5 +53,103 @@ final class Carton
         }
 
         session()->put(self::SESSION_KEY, $this->cart->id);
+    }
+
+    public function createCart(?string $currencyCode = null): Cart
+    {
+        $currencyCode ??= config('carton.default_currency.code');
+
+        $data = [
+            'is_active' => true,
+            'currency_code' => $currencyCode,
+            'user_id' => auth()->id(),
+        ];
+
+        $cart = Cart::query()->create($data);
+
+        $this->setCart($cart);
+
+        return $cart;
+    }
+
+    public function destroyCart(Cart $cart): void
+    {
+        $cart->delete();
+
+        if (session()->has(self::SESSION_KEY)) {
+            session()->forget(self::SESSION_KEY);
+        }
+
+        $this->cart = null;
+    }
+
+    public function addLine(CartLineData $data, int $quantity = 1): CartLine
+    {
+        if (! $this->cart instanceof Cart) {
+            $this->createCart();
+        }
+
+        if ($data->withVat) {
+            $priceWithVat = $data->price;
+            $price = $priceWithVat / (1 + $data->vatRate / 100);
+        } else {
+            $price = $data->price;
+            $priceWithVat = $price * (1 + $data->vatRate / 100);
+        }
+
+        $line = $this->cart->lines()->create([
+            'title' => $data->title,
+            'quantity' => $quantity,
+            'vat_rate' => $data->vatRate,
+            'price' => $price,
+            'price_with_vat' => $priceWithVat,
+            'total' => $price * $quantity,
+            'total_with_vat' => $priceWithVat * $quantity,
+            'additional' => $data->additional,
+        ]);
+
+        $this->recalculate();
+
+        return $line;
+    }
+
+    public function updateLineQuantity(CartLine $line, int $quantity): bool
+    {
+        return $line->update([
+            'quantity' => $quantity,
+            'total' => $quantity * $line->price,
+            'total_with_vat' => $quantity * $line->price_with_vat,
+        ]);
+    }
+
+    public function recalculate(): void
+    {
+        if (! $this->cart instanceof Cart) {
+            return;
+        }
+
+        $count = $this->cart->lines()->sum('quantity');
+        $subTotal = 0;
+        $subTotalWithVat = 0;
+        $grandTotal = 0;
+        $grandTotalWithVat = 0;
+        $vatTotal = 0;
+
+        foreach ($this->cart->lines as $line) {
+            $subTotal += $line->total;
+            $subTotalWithVat += $line->total_with_vat;
+            $grandTotal += $line->total_with_vat;
+            $grandTotalWithVat += $line->total_with_vat;
+            $vatTotal += $line->total_with_vat - $line->total;
+        }
+
+        $this->cart->count = $count;
+        $this->cart->sub_total = $subTotal;
+        $this->cart->sub_total_with_vat = $subTotalWithVat;
+        $this->cart->grand_total = $grandTotal;
+        $this->cart->grand_total_with_vat = $grandTotalWithVat;
+        $this->cart->vat_total = $vatTotal;
+
+        $this->cart->save();
     }
 }
