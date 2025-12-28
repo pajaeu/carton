@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void mergeUserCart(Authenticatable $user)
  * @method static CartLine addLine(CartLineData $data, int $quantity = 1)
  * @method static void removeLine(int $id)
- * @method static bool updateLineQuantity(CartLine $line, int $quantity)
+ * @method static void updateLineQuantity(CartLine $line, int $quantity)
  * @method static void recalculate()
  *
  * @see \Carton\Carton\Carton

@@ -215,13 +215,23 @@ final class Carton
         $this->recalculate();
     }
 
-    public function updateLineQuantity(CartLine $line, int $quantity): bool
+    public function updateLineQuantity(CartLine $line, int $quantity): void
     {
-        return $line->update([
+        if ($quantity < 1) {
+            $line->delete();
+
+            $this->recalculate();
+
+            return;
+        }
+
+        $line->update([
             'quantity' => $quantity,
             'total' => $quantity * $line->price,
             'total_with_vat' => $quantity * $line->price_with_vat,
         ]);
+
+        $this->recalculate();
     }
 
     public function recalculate(): void
